@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فلتان. — QA / فرونت اند / كتابة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5EFE1;
+    --ink:#111111;
+    --ink-fixed:#111111;
+    --paper-fixed:#F5EFE1;
+    --lime:#D7FF3D;
+    --pink:#FF3E8A;
+    --blue:#3D8DFF;
+    --card:#F5EFE1;
+    --shadow:6px 6px 0 var(--ink);
+    --shadow-sm:4px 4px 0 var(--ink);
+  }
+  html.dark{
+    --paper:#121212;
+    --ink:#F5EFE1;
+    --card:#1B1B1B;
+    --lime:#E4FF6B;
+    --pink:#FF6FA8;
+    --blue:#6FAEFF;
+  }
+  html{scroll-behavior:smooth;}
+  *{box-sizing:border-box;}
+  ::selection{background:var(--pink);color:var(--ink);}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:'Cairo',sans-serif;
+    cursor:none;overflow-x:hidden;
+    transition:background-color .25s,color .25s;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 28px;}
+
+  #cur{
+    position:fixed;top:0;left:0;width:26px;height:26px;
+    border:3px solid var(--ink);border-radius:50%;
+    pointer-events:none;z-index:999;
+    transform:translate(-50%,-50%);
+    transition:width .18s,height .18s,background .18s,border-color .2s;
+  }
+  #cur.big{width:60px;height:60px;background:var(--lime);}
+  @media(max-width:900px){#cur{display:none;}body{cursor:auto;}}
+
+  .marquee{
+    background:var(--ink-fixed);color:var(--lime);
+    overflow:hidden;white-space:nowrap;
+    border-bottom:3px solid var(--ink);
+    padding:10px 0;
+  }
+  .marquee div{
+    display:inline-block;font-family:'Lalezar',sans-serif;
+    font-size:18px;letter-spacing:1px;
+    animation:scroll 20s linear infinite;
+  }
+  .marquee span{padding:0 24px;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  header{padding:22px 0;border-bottom:3px solid var(--ink);position:relative;z-index:10;background:var(--paper);}
+  .nav{display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .logo{font-family:'Lalezar',sans-serif;font-size:28px;}
+  .logo span{color:var(--pink);}
+  .nav-links{display:flex;gap:16px;font-weight:700;font-size:14px;}
+  .nav-links a{padding:6px 4px;border-bottom:3px solid transparent;}
+  .nav-links a.active,.nav-links a:hover{border-color:var(--pink);}
+  .nav-right{display:flex;align-items:center;gap:10px;}
+  .icon-btn{
+    border:3px solid var(--ink);background:var(--paper);color:var(--ink);
+    width:38px;height:38px;font-size:14px;font-weight:700;
+    box-shadow:var(--shadow-sm);cursor:none;
+  }
+  .hamburger{display:none;}
+  @media(max-width:1180px){
+    .nav-links{
+      display:none;position:absolute;top:100%;right:0;left:0;
+      flex-direction:column;background:var(--paper);
+      border-bottom:3px solid var(--ink);padding:14px 28px 22px;gap:4px;
+      z-index:20;
+    }
+    .nav-links.open{display:flex;}
+    .nav-links a{padding:12px 0;border-bottom:1px solid var(--ink);}
+    .hamburger{display:block;}
+  }
+
+  main{position:relative;}
+  section[id]{scroll-margin-top:90px;}
+
+  /* HOME */
+  .hero{padding:70px 0 50px;position:relative;}
+  .hero h1{font-family:'Lalezar',sans-serif;font-size:clamp(42px,9vw,104px);line-height:0.95;margin:0;}
+  .hero h1 .r2{display:block;color:var(--paper);-webkit-text-stroke:2.5px var(--ink);}
+  .hero h1 .r3{background:var(--lime);color:var(--ink-fixed);display:inline-block;transform:rotate(-2deg);padding:0 14px;box-shadow:var(--shadow);border:3px solid var(--ink);margin-top:10px;}
+  .hero p{font-size:19px;max-width:56ch;margin:26px 0 34px;font-weight:600;}
+  .hero-actions{display:flex;gap:18px;flex-wrap:wrap;}
+  .btn{border:3px solid var(--ink);box-shadow:var(--shadow);padding:16px 30px;font-weight:900;font-size:16px;background:var(--paper);transition:.15s;display:inline-block;cursor:none;}
+  .btn:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink);}
+  .btn.pink{background:var(--pink);color:var(--ink-fixed);}
+  .btn.lime{background:var(--lime);color:var(--ink-fixed);}
+
+  .stamp{
+    position:absolute;top:40px;left:20px;width:130px;height:130px;
+    border:3px solid var(--ink);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    animation:spin 14s linear infinite;background:var(--paper);
+  }
+  .stamp span{font-family:'Lalezar',sans-serif;font-size:12px;text-align:center;line-height:1.4;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  @media(max-width:760px){.stamp{display:none;}}
+
+  .teaser{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:0 0 70px;}
+  .teaser a{
+    border:3px solid var(--ink);box-shadow:var(--shadow-sm);
+    padding:26px;background:var(--card);transition:.2s;
+  }
+  .teaser a:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink);}
+  .teaser h4{font-family:'Lalezar',sans-serif;font-size:22px;margin:0 0 8px;}
+  .teaser p{margin:0;font-size:13px;font-weight:600;color:var(--ink);opacity:.75;}
+  @media(max-width:760px){.teaser{grid-template-columns:1fr;}}
+
+  section{padding:60px 0;}
+  .section-title{font-family:'Lalezar',sans-serif;font-size:clamp(30px,5vw,50px);margin:0 0 36px;}
+  .section-title span{background:var(--pink);padding:0 10px;box-shadow:var(--shadow-sm);border:3px solid var(--ink);display:inline-block;transform:rotate(1deg);}
+
+  .bento{display:grid;grid-template-columns:repeat(6,1fr);gap:20px;}
+  .card{border:3px solid var(--ink);box-shadow:var(--shadow);background:var(--card);padding:24px;transition:.2s;}
+  .card:hover{transform:translate(-4px,-4px);box-shadow:10px 10px 0 var(--ink);}
+  .card h3{font-family:'Lalezar',sans-serif;font-size:22px;margin:0 0 8px;}
+  .card p{margin:0;font-size:13px;font-weight:600;opacity:.8;}
+  .c1{grid-column:span 3;transform:rotate(-1deg);background:var(--lime);color:var(--ink-fixed);}
+  .c2{grid-column:span 3;transform:rotate(1deg);}
+  .c3{grid-column:span 2;transform:rotate(1deg);}
+  .c4{grid-column:span 2;transform:rotate(-1deg);background:var(--pink);color:var(--ink-fixed);}
+  .c5{grid-column:span 2;transform:rotate(2deg);}
+  .c6{grid-column:span 6;transform:rotate(-0.5deg);}
+  @media(max-width:820px){.bento{grid-template-columns:repeat(2,1fr);}.c1,.c2,.c3,.c4,.c5,.c6{grid-column:span 2;}}
+
+  .stats{background:var(--ink-fixed);color:var(--paper-fixed);display:flex;flex-wrap:wrap;justify-content:space-around;text-align:center;padding:46px 20px;border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);}
+  .stat{padding:12px;}
+  .stat .n{font-family:'Lalezar',sans-serif;font-size:50px;color:var(--lime);}
+  .stat .l{font-size:12px;font-weight:700;}
+
+  /* WORK page */
+  .filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:34px;}
+  .filter-chip{
+    border:3px solid var(--ink);background:var(--paper);
+    padding:9px 18px;font-weight:700;font-size:13px;cursor:none;
+  }
+  .filter-chip.active{background:var(--lime);color:var(--ink-fixed);}
+  .work-list{display:flex;flex-direction:column;}
+  .work-row{display:flex;justify-content:space-between;align-items:center;padding:26px 10px;border-top:3px solid var(--ink);transition:.2s;gap:14px;flex-wrap:wrap;}
+  .work-list .work-row:last-child{border-bottom:3px solid var(--ink);}
+  .work-row:hover{background:var(--ink);color:var(--paper);padding-inline-start:26px;}
+  .work-row h3{font-family:'Lalezar',sans-serif;font-size:24px;margin:0;}
+  .work-row .tags{font-size:12px;font-weight:700;opacity:.75;}
+  .work-row .arrow{font-size:24px;transform:scaleX(-1);}
+
+  /* ABOUT page */
+  .about-bio{font-size:17px;font-weight:600;max-width:64ch;margin:0 0 40px;line-height:1.8;}
+  .timeline{display:flex;flex-direction:column;gap:0;margin-bottom:50px;}
+  .t-row{display:flex;gap:20px;border-top:3px solid var(--ink);padding:22px 0;align-items:flex-start;}
+  .timeline .t-row:last-child{border-bottom:3px solid var(--ink);}
+  .t-row .yr{font-family:'Lalezar',sans-serif;font-size:22px;color:var(--pink);min-width:90px;}
+  .t-row .tx h4{margin:0 0 4px;font-size:17px;}
+  .t-row .tx p{margin:0;font-size:13px;opacity:.75;font-weight:600;}
+  .fact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .fact{border:3px solid var(--ink);background:var(--card);box-shadow:var(--shadow-sm);padding:20px;text-align:center;}
+  .fact .n{font-family:'Lalezar',sans-serif;font-size:34px;color:var(--blue);}
+  .fact .l{font-size:12px;font-weight:700;}
+  @media(max-width:760px){.fact-grid{grid-template-columns:repeat(2,1fr);}}
+
+  .quote{max-width:800px;margin:0 auto;text-align:center;}
+  .quote p{font-family:'Lalezar',sans-serif;font-size:clamp(20px,3.2vw,30px);line-height:1.4;}
+  .quote .who{font-size:13px;font-weight:700;margin-top:14px;display:block;}
+
+  /* PROCESS strip */
+  .process-strip{display:flex;flex-wrap:wrap;gap:20px;margin-bottom:60px;}
+  .p-step{flex:1 1 200px;border:3px solid var(--ink);background:var(--card);box-shadow:var(--shadow-sm);padding:22px;}
+  .p-step .num{font-family:'Lalezar',sans-serif;font-size:36px;color:var(--pink);}
+  .p-step h4{margin:8px 0 6px;font-size:16px;}
+  .p-step p{margin:0;font-size:13px;opacity:.75;font-weight:600;}
+
+  /* PRICING */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .price-card{border:3px solid var(--ink);background:var(--card);box-shadow:var(--shadow);padding:30px 24px;display:flex;flex-direction:column;gap:16px;transition:.2s;}
+  .price-card:hover{transform:translate(-4px,-4px);box-shadow:10px 10px 0 var(--ink);}
+  .price-card.hot{background:var(--pink);color:var(--ink-fixed);transform:rotate(-1deg);}
+  .price-card.hot:hover{transform:rotate(-1deg) translate(-4px,-4px);}
+  .price-card h3{font-family:'Lalezar',sans-serif;font-size:24px;margin:0;}
+  .price-card .amount{font-family:'Lalezar',sans-serif;font-size:42px;}
+  .price-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .price-card li{font-size:13px;font-weight:600;}
+  .price-card li::before{content:"▸ ";}
+  .price-card .badge{align-self:flex-start;background:var(--lime);color:var(--ink-fixed);border:3px solid var(--ink);padding:3px 12px;font-size:11px;font-weight:900;transform:rotate(-3deg);}
+  @media(max-width:820px){.price-grid{grid-template-columns:1fr;}}
+
+  /* TESTIMONIALS grid */
+  .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .test-card{border:3px solid var(--ink);background:var(--card);box-shadow:var(--shadow-sm);padding:24px;transition:.2s;}
+  .test-card:nth-child(2){transform:rotate(1.5deg);}
+  .test-card:nth-child(3){transform:rotate(-1.5deg);}
+  .test-card:hover{transform:translate(-3px,-3px) rotate(0deg);box-shadow:8px 8px 0 var(--ink);}
+  .test-card p{font-family:'Lalezar',sans-serif;font-size:17px;margin:0 0 14px;line-height:1.4;}
+  .test-card span{font-size:12px;font-weight:700;opacity:.75;}
+  @media(max-width:820px){.test-grid{grid-template-columns:1fr;}}
+
+  /* FAQ */
+  .faq-list{max-width:760px;margin:0 auto;}
+  .faq-item{border-top:3px solid var(--ink);}
+  .faq-list .faq-item:last-child{border-bottom:3px solid var(--ink);}
+  .faq-item summary{
+    padding:22px 4px;cursor:none;font-family:'Lalezar',sans-serif;
+    font-size:18px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{content:"+";font-size:26px;color:var(--pink);flex-shrink:0;}
+  .faq-item[open] summary::after{content:"−";}
+  .faq-item p{margin:0 0 22px;font-size:14px;font-weight:600;opacity:.8;max-width:65ch;}
+
+  /* CONTACT page */
+  .cta{text-align:center;padding:70px 20px;}
+  .cta h2{font-family:'Lalezar',sans-serif;font-size:clamp(36px,7vw,80px);margin:0 0 20px;}
+  .social-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:30px;}
+  .social-row a{border:3px solid var(--ink);padding:10px 20px;font-weight:700;font-size:13px;box-shadow:var(--shadow-sm);}
+  .chaos-btn{margin-top:30px;background:transparent;border:3px dashed var(--ink);padding:12px 26px;font-weight:700;font-size:13px;cursor:none;color:var(--ink);}
+
+  footer{border-top:3px solid var(--ink);padding:26px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;font-weight:700;}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+
+<div class="marquee">
+  <div>
+    <span data-ar="متاح للتعاون *" data-en="Available for work *">متاح للتعاون *</span><span data-ar="QA + فرونت اند + كتابة *" data-en="QA + Frontend + Copywriting *">QA + فرونت اند + كتابة *</span><span data-ar="مش بحب الروتين *" data-en="I don't do boring *">مش بحب الروتين *</span><span data-ar="من القاهرة للعالم *" data-en="From Cairo to the world *">من القاهرة للعالم *</span>
+    <span data-ar="متاح للتعاون *" data-en="Available for work *">متاح للتعاون *</span><span data-ar="QA + فرونت اند + كتابة *" data-en="QA + Frontend + Copywriting *">QA + فرونت اند + كتابة *</span><span data-ar="مش بحب الروتين *" data-en="I don't do boring *">مش بحب الروتين *</span><span data-ar="من القاهرة للعالم *" data-en="From Cairo to the world *">من القاهرة للعالم *</span>
+  </div>
+</div>
+
+<header>
+  <div class="wrap nav">
+    <div class="logo"><span data-ar="فلتان" data-en="Faltan">فلتان</span><span>.</span></div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home" data-page="home" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
+      <a href="#services" data-page="services" data-ar="خدماتي" data-en="Services">خدماتي</a>
+      <a href="#work" data-page="work" data-ar="شغلي" data-en="Work">شغلي</a>
+      <a href="#pricing" data-page="pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a>
+      <a href="#about" data-page="about" data-ar="عني" data-en="About">عني</a>
+      <a href="#testimonials" data-page="testimonials" data-ar="آراء" data-en="Reviews">آراء</a>
+      <a href="#faq" data-page="faq" data-ar="أسئلة" data-en="FAQ">أسئلة</a>
+      <a href="#contact" data-page="contact" data-ar="تواصل" data-en="Contact">تواصل</a>
+    </nav>
+    <div class="nav-right">
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">☾</button>
+      <button class="icon-btn" onclick="toggleLang()" id="langBtn">EN</button>
+      <button class="icon-btn hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section id="home">
+    <div class="wrap hero">
+      <div class="stamp"><span data-ar="ISTQB معتمد<br>QA + فرونت اند" data-en="ISTQB Certified<br>QA + Frontend">ISTQB معتمد<br>QA + فرونت اند</span></div>
+      <h1>
+        <span class="r1" data-ar="مهندس جودة." data-en="QA Engineer.">مهندس جودة.</span>
+        <span class="r2" data-ar="مطوّر واجهات." data-en="Frontend Developer.">مطوّر واجهات.</span>
+        <span class="r3" data-ar="وكاتب كمان." data-en="And a writer too.">وكاتب كمان.</span>
+      </h1>
+      <p data-ar="بختبر المنتجات لحد ما تتكسر، أبني الواجهات لحد ما تظبط، وأكتب الكلام اللي يخلي حد يضغط 'اشترِ الآن'. حاجة واحدة بس ثابتة: مش بحب الروتين." data-en="I break products until they stop breaking, build interfaces until they feel right, and write the words that make someone hit 'buy now'. One thing stays constant: I don't do boring.">بختبر المنتجات لحد ما تتكسر، أبني الواجهات لحد ما تظبط، وأكتب الكلام اللي يخلي حد يضغط 'اشترِ الآن'. حاجة واحدة بس ثابتة: مش بحب الروتين.</p>
+      <div class="hero-actions">
+        <a class="btn pink" href="#work" data-page-link="work" data-ar="شوف شغلي" data-en="See my work">شوف شغلي</a>
+        <a class="btn lime" href="#contact" data-page-link="contact" data-ar="يلا نعمل حاجة" data-en="Let's build something">يلا نعمل حاجة</a>
+      </div>
+    </div>
+
+    <div class="wrap teaser">
+      <a href="#work" data-page-link="work">
+        <h4 data-ar="شغلي →" data-en="My work →">شغلي →</h4>
+        <p data-ar="مشاريع QA، فرونت اند، وكتابة" data-en="QA, frontend, and copy projects">مشاريع QA، فرونت اند، وكتابة</p>
+      </a>
+      <a href="#about" data-page-link="about">
+        <h4 data-ar="مين أنا →" data-en="About me →">مين أنا →</h4>
+        <p data-ar="رحلتي من الدعم الفني للـ QA" data-en="My path from support to QA">رحلتي من الدعم الفني للـ QA</p>
+      </a>
+      <a href="#contact" data-page-link="contact">
+        <h4 data-ar="كلمني →" data-en="Get in touch →">كلمني →</h4>
+        <p data-ar="متاح لمشاريع جديدة دلوقتي" data-en="Open for new projects now">متاح لمشاريع جديدة دلوقتي</p>
+      </a>
+    </div>
+
+    <div class="wrap">
+      <h2 class="section-title" data-ar='إيه اللي <span>بعمله</span>' data-en='What I <span>do</span>'>إيه اللي <span>بعمله</span></h2>
+      <div class="bento">
+        <div class="card c1"><h3 data-ar="اختبار الجودة" data-en="QA Testing">اختبار الجودة</h3><p data-ar="اختبار يدوي ومؤتمت، تقارير واضحة، صفر مفاجآت بعد الإطلاق." data-en="Manual & automated testing, clear reports, zero surprises after launch.">اختبار يدوي ومؤتمت، تقارير واضحة، صفر مفاجآت بعد الإطلاق.</p></div>
+        <div class="card c2"><h3 data-ar="تطوير واجهات" data-en="Frontend Development">تطوير واجهات</h3><p data-ar="HTML/CSS/JS نضيف وسريع، من غير تعقيد مالوش لازمة." data-en="Clean, fast HTML/CSS/JS — no unnecessary complexity.">HTML/CSS/JS نضيف وسريع، من غير تعقيد مالوش لازمة.</p></div>
+        <div class="card c3"><h3 data-ar="كتابة محتوى" data-en="Copywriting">كتابة محتوى</h3><p data-ar="نصوص بتتكلم زي البني آدمين مش زي البروشورات." data-en="Copy that talks like a human, not a brochure.">نصوص بتتكلم زي البني آدمين مش زي البروشورات.</p></div>
+        <div class="card c4"><h3 data-ar="مراجعة ما قبل الإطلاق" data-en="Pre-launch Review">مراجعة ما قبل الإطلاق</h3><p data-ar="كشف الثغرات قبل ما العميل يكتشفها." data-en="Catching the gaps before your customers do.">كشف الثغرات قبل ما العميل يكتشفها.</p></div>
+        <div class="card c5"><h3 data-ar="أتمتة اختبارات" data-en="Test Automation">أتمتة اختبارات</h3><p data-ar="مجموعات Postman جاهزة تغطي الـ APIs بتاعتك." data-en="Postman suites that cover your APIs end to end.">مجموعات Postman جاهزة تغطي الـ APIs بتاعتك.</p></div>
+        <div class="card c6"><h3 data-ar="استشارات منتج" data-en="Product Consulting">استشارات منتج</h3><p data-ar="نظرة برّانية على منتجك من حد شاف مية منتج قبل كده." data-en="An outside eye on your product from someone who's seen a hundred before it.">نظرة برّانية على منتجك من حد شاف مية منتج قبل كده.</p></div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n">+50</div><div class="l" data-ar="مشروع" data-en="Projects">مشروع</div></div>
+      <div class="stat"><div class="n">7</div><div class="l" data-ar="سنين خبرة" data-en="Years experience">سنين خبرة</div></div>
+      <div class="stat"><div class="n">ISTQB</div><div class="l" data-ar="معتمد" data-en="Certified">معتمد</div></div>
+      <div class="stat"><div class="n">0</div><div class="l" data-ar="قوالب جاهزة" data-en="Generic templates">قوالب جاهزة</div></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="wrap">
+      <h2 class="section-title" data-ar='خدماتي <span>بالتفصيل</span>' data-en='My services <span>in detail</span>'>خدماتي <span>بالتفصيل</span></h2>
+      <div class="bento">
+        <div class="card c1"><h3 data-ar="اختبار الجودة" data-en="QA Testing">اختبار الجودة</h3><p data-ar="اختبار يدوي شامل + مؤتمت لو محتاج، تغطية للحالات الحرجة والـ edge cases، وتقرير واضح فيه كل باگ ودرجة خطورته." data-en="Full manual testing plus automation where needed, coverage for critical paths and edge cases, and a clear report ranking every bug by severity.">اختبار يدوي شامل + مؤتمت لو محتاج، تغطية للحالات الحرجة والـ edge cases، وتقرير واضح فيه كل باگ ودرجة خطورته.</p></div>
+        <div class="card c2"><h3 data-ar="تطوير واجهات" data-en="Frontend Development">تطوير واجهات</h3><p data-ar="HTML/CSS/JS نضيف، ريسبونسيف بالكامل، وسريع التحميل من غير مكتبات زيادة عن اللزوم." data-en="Clean HTML/CSS/JS, fully responsive, fast-loading with no unnecessary libraries.">HTML/CSS/JS نضيف، ريسبونسيف بالكامل، وسريع التحميل من غير مكتبات زيادة عن اللزوم.</p></div>
+        <div class="card c3"><h3 data-ar="كتابة محتوى" data-en="Copywriting">كتابة محتوى</h3><p data-ar="نصوص لاندنج بيدج، إيميلات، وصف منتجات — كل نص بيتكتب علشان يقنع مش بس يملي فراغ." data-en="Landing page copy, emails, product descriptions — every line written to persuade, not just fill space.">نصوص لاندنج بيدج، إيميلات، وصف منتجات — كل نص بيتكتب علشان يقنع مش بس يملي فراغ.</p></div>
+        <div class="card c4"><h3 data-ar="مراجعة ما قبل الإطلاق" data-en="Pre-launch Review">مراجعة ما قبل الإطلاق</h3><p data-ar="جولة أخيرة قبل ما تفتح المنتج للناس — بنلاقي المشاكل احنا قبل ما يلاقيها العميل." data-en="One last pass before you open the doors — we find the issues before your customers do.">جولة أخيرة قبل ما تفتح المنتج للناس — بنلاقي المشاكل احنا قبل ما يلاقيها العميل.</p></div>
+        <div class="card c5"><h3 data-ar="أتمتة اختبارات" data-en="Test Automation">أتمتة اختبارات</h3><p data-ar="مجموعات Postman جاهزة تغطي دورة حياة كل Entity من التسجيل للحذف." data-en="Postman suites covering each entity's full lifecycle from creation to deletion.">مجموعات Postman جاهزة تغطي دورة حياة كل Entity من التسجيل للحذف.</p></div>
+        <div class="card c6"><h3 data-ar="استشارات منتج" data-en="Product Consulting">استشارات منتج</h3><p data-ar="جلسة أو تقرير مكتوب فيه كل حاجة شايفها محتاجة تتظبط في منتجك — من تجربة المستخدم لحد الأداء." data-en="A session or written report covering everything I'd fix in your product — from UX to performance.">جلسة أو تقرير مكتوب فيه كل حاجة شايفها محتاجة تتظبط في منتجك — من تجربة المستخدم لحد الأداء.</p></div>
+      </div>
+
+      <h2 class="section-title" style="margin-top:60px;" data-ar='إزاي <span>بشتغل</span>' data-en='How I <span>work</span>'>إزاي <span>بشتغل</span></h2>
+      <div class="process-strip">
+        <div class="p-step"><div class="num">01</div><h4 data-ar="نتكلم" data-en="We talk">نتكلم</h4><p data-ar="تبعتلي فكرتك، نحدد المطلوب بالظبط." data-en="You send your idea, we scope it exactly.">تبعتلي فكرتك، نحدد المطلوب بالظبط.</p></div>
+        <div class="p-step"><div class="num">02</div><h4 data-ar="أشتغل" data-en="I work">أشتغل</h4><p data-ar="تنفيذ فعلي مع تحديثات دورية مش اختفاء لحد التسليم." data-en="Real work with regular updates — no disappearing until delivery.">تنفيذ فعلي مع تحديثات دورية مش اختفاء لحد التسليم.</p></div>
+        <div class="p-step"><div class="num">03</div><h4 data-ar="تراجع" data-en="You review">تراجع</h4><p data-ar="تشوف النتيجة وتقولي رأيك، وأعدّل لحد ما تظبط." data-en="You see the result and give feedback, I refine until it fits.">تشوف النتيجة وتقولي رأيك، وأعدّل لحد ما تظبط.</p></div>
+        <div class="p-step"><div class="num">04</div><h4 data-ar="بنسلّم" data-en="We ship">بنسلّم</h4><p data-ar="تسليم نهائي، وفترة دعم بعد كده لأي حاجة طارئة." data-en="Final delivery, plus a support window for anything urgent after.">تسليم نهائي، وفترة دعم بعد كده لأي حاجة طارئة.</p></div>
+      </div>
+    </div>
+  </section>
+  <section id="work">
+    <div class="wrap">
+      <h2 class="section-title" data-ar='شغل <span>سابق</span>' data-en='Selected <span>work</span>'>شغل <span>سابق</span></h2>
+      <div class="filters">
+        <button class="filter-chip active" data-filter="all" data-ar="الكل" data-en="All">الكل</button>
+        <button class="filter-chip" data-filter="qa" data-ar="QA" data-en="QA">QA</button>
+        <button class="filter-chip" data-filter="frontend" data-ar="فرونت اند" data-en="Frontend">فرونت اند</button>
+        <button class="filter-chip" data-filter="copy" data-ar="كتابة" data-en="Copy">كتابة</button>
+      </div>
+      <div class="work-list">
+        <div class="work-row" data-cat="qa"><h3 data-ar="اختبار منصة تعليمية" data-en="Testing an e-learning platform">اختبار منصة تعليمية</h3><span class="tags" data-ar="QA يدوي وأمني" data-en="Manual & security QA">QA يدوي وأمني</span><span class="arrow">←</span></div>
+        <div class="work-row" data-cat="qa"><h3 data-ar="أتمتة API لنظام إدارة" data-en="API automation for an admin system">أتمتة API لنظام إدارة</h3><span class="tags" data-ar="Postman + أتمتة" data-en="Postman + automation">Postman + أتمتة</span><span class="arrow">←</span></div>
+        <div class="work-row" data-cat="frontend"><h3 data-ar="لاندنج بيدج لتطبيق SaaS" data-en="Landing page for a SaaS app">لاندنج بيدج لتطبيق SaaS</h3><span class="tags" data-ar="تصميم وتطوير" data-en="Design & development">تصميم وتطوير</span><span class="arrow">←</span></div>
+        <div class="work-row" data-cat="frontend"><h3 data-ar="منصة حجز مواعيد" data-en="Appointment booking platform">منصة حجز مواعيد</h3><span class="tags" data-ar="UI + تطوير" data-en="UI + development">UI + تطوير</span><span class="arrow">←</span></div>
+        <div class="work-row" data-cat="copy"><h3 data-ar="حملة محتوى لمتجر إلكتروني" data-en="Content campaign for an online store">حملة محتوى لمتجر إلكتروني</h3><span class="tags" data-ar="كتابة تسويقية" data-en="Marketing copy">كتابة تسويقية</span><span class="arrow">←</span></div>
+        <div class="work-row" data-cat="qa"><h3 data-ar="مراجعة ما قبل إطلاق تطبيق جوال" data-en="Pre-launch review for a mobile app">مراجعة ما قبل إطلاق تطبيق جوال</h3><span class="tags" data-ar="اختبار شامل" data-en="Full QA pass">اختبار شامل</span><span class="arrow">←</span></div>
+        <div class="work-row" data-cat="copy"><h3 data-ar="نصوص موقع لشركة ناشئة" data-en="Website copy for a startup">نصوص موقع لشركة ناشئة</h3><span class="tags" data-ar="كتابة ومراجعة" data-en="Copy & editing">كتابة ومراجعة</span><span class="arrow">←</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="wrap">
+      <h2 class="section-title" data-ar='الأسعار <span>من غير لف</span>' data-en='Pricing <span>no BS</span>'>الأسعار <span>من غير لف</span></h2>
+      <div class="price-grid">
+        <div class="price-card">
+          <h3 data-ar="لقطة سريعة" data-en="Quick Fix">لقطة سريعة</h3>
+          <div class="amount">$150</div>
+          <ul>
+            <li data-ar="جولة اختبار واحدة" data-en="One QA pass">جولة اختبار واحدة</li>
+            <li data-ar="تقرير باگات مفصّل" data-en="Detailed bug report">تقرير باگات مفصّل</li>
+            <li data-ar="تسليم خلال 3 أيام" data-en="Delivered in 3 days">تسليم خلال 3 أيام</li>
+          </ul>
+          <a class="btn" href="#contact" data-page-link="contact" data-ar="ابدأ" data-en="Start">ابدأ</a>
+        </div>
+        <div class="price-card hot">
+          <div class="badge" data-ar="الأكتر طلبًا" data-en="Most popular">الأكتر طلبًا</div>
+          <h3 data-ar="الباقة الكاملة" data-en="Full Package">الباقة الكاملة</h3>
+          <div class="amount">$550</div>
+          <ul>
+            <li data-ar="اختبار + مراجعة قبل الإطلاق" data-en="Testing + pre-launch review">اختبار + مراجعة قبل الإطلاق</li>
+            <li data-ar="تطوير أو تعديل واجهة" data-en="Frontend build or fixes">تطوير أو تعديل واجهة</li>
+            <li data-ar="مراجعتين تعديل" data-en="Two revision rounds">مراجعتين تعديل</li>
+            <li data-ar="تسليم خلال أسبوع" data-en="Delivered in a week">تسليم خلال أسبوع</li>
+          </ul>
+          <a class="btn" href="#contact" data-page-link="contact" style="background:var(--ink-fixed);color:var(--paper-fixed);border-color:var(--ink-fixed);" data-ar="ابدأ" data-en="Start">ابدأ</a>
+        </div>
+        <div class="price-card">
+          <h3 data-ar="شريك دائم" data-en="Ongoing Partner">شريك دائم</h3>
+          <div class="amount" data-ar="اتفاق شهري" data-en="Monthly retainer">اتفاق شهري</div>
+          <ul>
+            <li data-ar="QA + فرونت اند + كتابة مستمرة" data-en="Ongoing QA + frontend + copy">QA + فرونت اند + كتابة مستمرة</li>
+            <li data-ar="أولوية في الرد والتسليم" data-en="Priority response & delivery">أولوية في الرد والتسليم</li>
+            <li data-ar="تعديلات غير محدودة" data-en="Unlimited revisions">تعديلات غير محدودة</li>
+          </ul>
+          <a class="btn" href="#contact" data-page-link="contact" data-ar="كلمني" data-en="Get in touch">كلمني</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <h2 class="section-title" data-ar='مين <span>أنا</span>' data-en='Who <span>I am</span>'>مين <span>أنا</span></h2>
+      <p class="about-bio" data-ar="مقيم في القاهرة، بدأت شغلي في الدعم الفني، بعدها اتجهت للفرونت اند، ودلوقتي مهندس جودة (QA) حاصل على شهادة ISTQB، وبكتب محتوى بردو لما ألاقي وقت. الخلطة دي غريبة بس بتخليني أشوف المنتج من زوايا مختلفة — بصمّمه، أختبره، وأكتب عنه." data-en="Based in Cairo. Started in application support, moved into frontend, and now I'm an ISTQB-certified QA engineer who also writes copy on the side. It's an odd mix, but it means I see a product from every angle — I design it, break it, and write about it.">مقيم في القاهرة، بدأت شغلي في الدعم الفني، بعدها اتجهت للفرونت اند، ودلوقتي مهندس جودة (QA) حاصل على شهادة ISTQB، وبكتب محتوى بردو لما ألاقي وقت. الخلطة دي غريبة بس بتخليني أشوف المنتج من زوايا مختلفة — بصمّمه، أختبره، وأكتب عنه.</p>
+
+      <div class="timeline">
+        <div class="t-row"><div class="yr">01</div><div class="tx"><h4 data-ar="الدعم الفني" data-en="Application Support">الدعم الفني</h4><p data-ar="بداية المشوار — فهم المشاكل من عين المستخدم." data-en="Where it started — understanding problems from the user's seat.">بداية المشوار — فهم المشاكل من عين المستخدم.</p></div></div>
+        <div class="t-row"><div class="yr">02</div><div class="tx"><h4 data-ar="فرونت اند" data-en="Frontend Development">فرونت اند</h4><p data-ar="اتعلمت أبني الواجهات، مش بس أستخدمها." data-en="Learned to build interfaces, not just use them.">اتعلمت أبني الواجهات، مش بس أستخدمها.</p></div></div>
+        <div class="t-row"><div class="yr">03</div><div class="tx"><h4 data-ar="ضمان الجودة (QA)" data-en="Quality Assurance">ضمان الجودة (QA)</h4><p data-ar="ISTQB معتمد، وبقيت بكسر المنتجات بشكل احترافي." data-en="ISTQB certified, and now I break products professionally.">ISTQB معتمد، وبقيت بكسر المنتجات بشكل احترافي.</p></div></div>
+        <div class="t-row"><div class="yr">04</div><div class="tx"><h4 data-ar="كتابة المحتوى" data-en="Copywriting">كتابة المحتوى</h4><p data-ar="مهارة جنبية بقت جزء أساسي من شغلي." data-en="A side skill that became a core part of my work.">مهارة جنبية بقت جزء أساسي من شغلي.</p></div></div>
+      </div>
+
+      <div class="fact-grid">
+        <div class="fact"><div class="n">EG</div><div class="l" data-ar="القاهرة" data-en="Cairo">القاهرة</div></div>
+        <div class="fact"><div class="n">ISTQB</div><div class="l" data-ar="شهادة معتمدة" data-en="Certified">شهادة معتمدة</div></div>
+        <div class="fact"><div class="n">3</div><div class="l" data-ar="تخصصات في واحد" data-en="Skills in one">تخصصات في واحد</div></div>
+        <div class="fact"><div class="n">∞</div><div class="l" data-ar="فضول تقني" data-en="Technical curiosity">فضول تقني</div></div>
+      </div>
+    </div>
+
+    <div class="wrap quote" style="margin-top:60px;">
+      <p data-ar='"واحد من القلائل اللي بيلاقي الباگ قبل ما تتحول لكارثة، وبيشرحلك ليه حصلت."' data-en='"One of the few people who catches the bug before it becomes a disaster — and explains why it happened."'>"واحد من القلائل اللي بيلاقي الباگ قبل ما تتحول لكارثة، وبيشرحلك ليه حصلت."</p>
+      <span class="who" data-ar="— عميل مبسوط، غالبًا" data-en="— A happy client, probably">— عميل مبسوط، غالبًا</span>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="wrap">
+      <h2 class="section-title" data-ar='الناس <span>قالت إيه</span>' data-en='What people <span>say</span>'>الناس <span>قالت إيه</span></h2>
+      <div class="test-grid">
+        <div class="test-card">
+          <p data-ar="لاقى باگات كنا فاكرينها مش موجودة أصلًا. أنقذنا قبل الإطلاق بيوم." data-en="Found bugs we didn't even think existed. Saved our launch a day before.">لاقى باگات كنا فاكرينها مش موجودة أصلًا. أنقذنا قبل الإطلاق بيوم.</p>
+          <span data-ar="— مدير منتج، شركة ناشئة" data-en="— Product manager, a startup">— مدير منتج، شركة ناشئة</span>
+        </div>
+        <div class="test-card">
+          <p data-ar="الكتابة بتاعته مش زي أي كوبي رايتر عادي — بتتكلم بصوت البراند فعلًا." data-en="His copy isn't like a typical copywriter's — it actually sounds like our brand.">الكتابة بتاعته مش زي أي كوبي رايتر عادي — بتتكلم بصوت البراند فعلًا.</p>
+          <span data-ar="— صاحبة متجر إلكتروني" data-en="— E-commerce store owner">— صاحبة متجر إلكتروني</span>
+        </div>
+        <div class="test-card">
+          <p data-ar="سلّم الواجهة أسرع مما توقعنا، وشغالة تمام على كل الأجهزة من غير ما نطلب." data-en="Delivered the interface faster than expected, and it just worked on every device.">سلّم الواجهة أسرع مما توقعنا، وشغالة تمام على كل الأجهزة من غير ما نطلب.</p>
+          <span data-ar="— مؤسس تطبيق SaaS" data-en="— SaaS app founder">— مؤسس تطبيق SaaS</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <h2 class="section-title" data-ar='أسئلة <span>هتسألها أكيد</span>' data-en='Questions <span>you will definitely ask</span>'>أسئلة <span>هتسألها أكيد</span></h2>
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary data-ar="بتشتغل مع شركات برّه مصر؟" data-en="Do you work with companies outside Egypt?">بتشتغل مع شركات برّه مصر؟</summary>
+          <p data-ar="أيوه، معظم شغلي أونلاين وعن بعد أصلًا، فمش فارق فين مكانك." data-en="Yes, most of my work is remote anyway, so location isn't an issue.">أيوه، معظم شغلي أونلاين وعن بعد أصلًا، فمش فارق فين مكانك.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-ar="ممكن تعمل الاتلاتة مع بعض في نفس المشروع؟" data-en="Can you do all three on the same project?">ممكن تعمل الاتلاتة مع بعض في نفس المشروع؟</summary>
+          <p data-ar="أكيد — ده بالظبط اللي بميزني. تديني المشروع وآخده من التصميم للاختبار للكتابة." data-en="Absolutely — that's exactly what sets me apart. Hand me the project and I take it from design through testing to copy.">أكيد — ده بالظبط اللي بميزني. تديني المشروع وآخده من التصميم للاختبار للكتابة.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-ar="إيه أسرع حاجة ممكن تسلّمها؟" data-en="What's the fastest thing you can deliver?">إيه أسرع حاجة ممكن تسلّمها؟</summary>
+          <p data-ar="جولة اختبار سريعة على منتج جاهز ممكن تتسلّم خلال 48 ساعة." data-en="A quick QA pass on an existing product can be delivered within 48 hours.">جولة اختبار سريعة على منتج جاهز ممكن تتسلّم خلال 48 ساعة.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-ar="بتاخد باقات شهرية طويلة المدى؟" data-en="Do you take long-term monthly retainers?">بتاخد باقات شهرية طويلة المدى؟</summary>
+          <p data-ar="أيوه، دي أفضل حاجة بالنسبالي فعلًا — استمرارية أحسن من مشاريع متقطعة." data-en="Yes, and honestly I prefer it — continuity beats one-off projects.">أيوه، دي أفضل حاجة بالنسبالي فعلًا — استمرارية أحسن من مشاريع متقطعة.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap cta">
+      <h2 data-ar="يلا نتكلم؟" data-en="Let's talk?">يلا <br> نتكلم؟</h2>
+      <a class="btn pink" href="mailto:hello@example.com" style="font-size:18px;" data-ar="راسلني: hello@example.com" data-en="Email me: hello@example.com">راسلني: hello@example.com</a>
+      <div class="social-row">
+        <a href="#">Mostaql</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">GitHub</a>
+      </div>
+      <br>
+      <button class="chaos-btn" onclick="chaos()" data-ar="دوس هنا لو زهقت من الألوان دي" data-en="Click here if you're tired of these colors">دوس هنا لو زهقت من الألوان دي</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span data-ar="© 2026 فلتان. كل الحقوق محفوظة." data-en="© 2026 Faltan. All rights reserved.">© 2026 فلتان. كل الحقوق محفوظة.</span>
+  <span data-ar="القاهرة، مصر" data-en="Cairo, Egypt">القاهرة، مصر</span>
+</footer>
+
+<script>
+  /* cursor */
+  var c = document.getElementById('cur');
+  document.addEventListener('mousemove', function(e){
+    c.style.left = e.clientX + 'px';
+    c.style.top = e.clientY + 'px';
+  });
+  function bindCursorTargets(){
+    document.querySelectorAll('a, button').forEach(function(el){
+      el.addEventListener('mouseenter', function(){ c.classList.add('big'); });
+      el.addEventListener('mouseleave', function(){ c.classList.remove('big'); });
+    });
+  }
+  bindCursorTargets();
+
+  /* scroll-spy: highlight nav link for the section in view */
+  var navLinks = document.querySelectorAll('#navLinks a');
+  var sections = ['home','services','work','pricing','about','testimonials','faq','contact']
+    .map(function(id){ return document.getElementById(id); })
+    .filter(Boolean);
+  function setActive(id){
+    navLinks.forEach(function(a){ a.classList.toggle('active', a.dataset.page === id); });
+  }
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting) setActive(entry.target.id);
+    });
+  }, {rootMargin:'-40% 0px -55% 0px'});
+  sections.forEach(function(s){ spy.observe(s); });
+
+  document.querySelectorAll('[data-page-link], #navLinks a').forEach(function(a){
+    a.addEventListener('click', function(){
+      document.getElementById('navLinks').classList.remove('open');
+    });
+  });
+
+  /* mobile menu */
+  function toggleMenu(){
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+  document.querySelectorAll('#navLinks a').forEach(function(a){
+    a.addEventListener('click', function(){ document.getElementById('navLinks').classList.remove('open'); });
+  });
+
+  /* work filters */
+  document.querySelectorAll('.filter-chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      document.querySelectorAll('.filter-chip').forEach(function(c2){ c2.classList.remove('active'); });
+      chip.classList.add('active');
+      var f = chip.dataset.filter;
+      document.querySelectorAll('.work-row').forEach(function(row){
+        row.style.display = (f==='all' || row.dataset.cat===f) ? 'flex' : 'none';
+      });
+    });
+  });
+
+  /* theme toggle */
+  function toggleTheme(){
+    document.documentElement.classList.toggle('dark');
+    document.getElementById('themeBtn').textContent =
+      document.documentElement.classList.contains('dark') ? '☀' : '☾';
+  }
+
+  /* lang toggle */
+  var currentLang = 'ar';
+  function toggleLang(){
+    currentLang = currentLang === 'ar' ? 'en' : 'ar';
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('langBtn').textContent = currentLang === 'ar' ? 'EN' : 'AR';
+    document.querySelectorAll('[data-ar]').forEach(function(el){
+      el.innerHTML = currentLang === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+    });
+  }
+
+  /* chaos palette shuffle */
+  var palettes = [
+    ['#D7FF3D','#FF3E8A','#3D8DFF'],
+    ['#FF9F1C','#2EC4B6','#E71D36'],
+    ['#00F5D4','#F15BB5','#FEE440'],
+    ['#B5FFE1','#FF6B6B','#4D96FF']
+  ];
+  var pi = 0;
+  function chaos(){
+    pi = (pi+1) % palettes.length;
+    var p = palettes[pi];
+    document.documentElement.style.setProperty('--lime', p[0]);
+    document.documentElement.style.setProperty('--pink', p[1]);
+    document.documentElement.style.setProperty('--blue', p[2]);
+  }
+</script>
+
+</body>
+</html>
