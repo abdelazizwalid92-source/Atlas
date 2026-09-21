@@ -49,7 +49,17 @@
     -webkit-font-smoothing:antialiased;
     transition:background-color .3s ease,color .3s ease;
     overflow-x:hidden;
+    cursor:none;
   }
+  #cur{
+    position:fixed;top:0;left:0;width:22px;height:22px;
+    border:1.5px solid var(--accent);border-radius:50%;
+    pointer-events:none;z-index:999;
+    transform:translate(-50%,-50%);
+    transition:width .18s,height .18s,background-color .18s,border-color .2s;
+  }
+  #cur.big{width:44px;height:44px;background:var(--accent);opacity:.18;}
+  @media(max-width:900px){#cur{display:none;}body{cursor:auto;}}
   h1,h2,h3,.serif{
     font-family:'El Messiri',sans-serif;
     font-weight:700;
@@ -395,6 +405,9 @@
 </head>
 <body>
 
+<div id="cur"></div>
+
+
 <header>
   <div class="nav">
     <div class="brand">
@@ -687,6 +700,16 @@
 </footer>
 
 <script>
+  var cur = document.getElementById('cur');
+  document.addEventListener('mousemove', function(e){
+    cur.style.left = e.clientX + 'px';
+    cur.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, summary').forEach(function(el){
+    el.addEventListener('mouseenter', function(){ cur.classList.add('big'); });
+    el.addEventListener('mouseleave', function(){ cur.classList.remove('big'); });
+  });
+
   var currentLang = 'ar';
   function toggleLang(){
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
