@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbit — Admin Dashboard Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F6FA;
+    --surface:#FFFFFF;
+    --surface-2:#F0F1F7;
+    --border:#E4E6F0;
+    --text:#1B1D29;
+    --text-muted:#6B7080;
+    --accent:#5B5FEF;
+    --accent-soft:#ECEBFF;
+    --green:#17B26A;
+    --green-soft:#E7F9F1;
+    --red:#F04438;
+    --red-soft:#FEEAE9;
+    --amber:#F79009;
+    --amber-soft:#FEF4E6;
+    --shadow:0 1px 2px rgba(20,20,43,.06), 0 1px 3px rgba(20,20,43,.08);
+    --radius:10px;
+  }
+  html.dark{
+    --bg:#12131C;
+    --surface:#181A25;
+    --surface-2:#1F2130;
+    --border:#2A2C3C;
+    --text:#EDEEF5;
+    --text-muted:#8D91A5;
+    --accent:#7B7FF5;
+    --accent-soft:#25264A;
+    --green-soft:#12291F;
+    --red-soft:#2E1A1A;
+    --amber-soft:#2E2416;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:'Inter',sans-serif;
+    transition:background-color .2s,color .2s;
+    -webkit-font-smoothing:antialiased;
+  }
+  html[dir="rtl"] body{font-family:'Tajawal',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ---------- LAYOUT ---------- */
+  .app{display:flex;min-height:100vh;}
+  .sidebar{
+    width:240px;background:var(--surface);border-inline-end:1px solid var(--border);
+    display:flex;flex-direction:column;padding:22px 16px;
+    position:fixed;top:0;bottom:0;z-index:30;transition:transform .25s;
+  }
+  html[dir="rtl"] .sidebar{right:0;}
+  html[dir="ltr"] .sidebar{left:0;}
+  .brand{display:flex;align-items:center;gap:10px;padding:0 8px 24px;font-weight:800;font-size:19px;}
+  .brand .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);}
+  .nav-group{margin-bottom:18px;}
+  .nav-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;padding:0 10px 8px;}
+  .nav-link{
+    display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:8px;
+    color:var(--text-muted);font-size:14px;font-weight:500;margin-bottom:2px;
+  }
+  .nav-link svg{width:18px;height:18px;flex-shrink:0;}
+  .nav-link:hover{background:var(--surface-2);color:var(--text);}
+  .nav-link.active{background:var(--accent-soft);color:var(--accent);font-weight:600;}
+  .sidebar-foot{margin-top:auto;border-top:1px solid var(--border);padding-top:14px;display:flex;align-items:center;gap:10px;}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+  .sidebar-foot .who{font-size:13px;font-weight:600;}
+  .sidebar-foot .role{font-size:11px;color:var(--text-muted);}
+
+  .main{flex:1;}
+  html[dir="ltr"] .main{margin-left:240px;}
+  html[dir="rtl"] .main{margin-right:240px;}
+
+  .topbar{
+    height:64px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 28px;border-bottom:1px solid var(--border);background:var(--surface);
+    position:sticky;top:0;z-index:20;
+  }
+  .search{
+    display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--border);
+    border-radius:8px;padding:8px 12px;width:280px;color:var(--text-muted);font-size:13px;
+  }
+  .search svg{width:15px;height:15px;flex-shrink:0;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .icon-btn{
+    width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);
+    display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:13px;font-weight:700;
+  }
+  .icon-btn:hover{background:var(--surface-2);color:var(--text);}
+  .hamburger{display:none;}
+
+  .content{padding:28px;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .page-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+  .page-head h1{font-size:22px;margin:0 0 4px;font-weight:800;}
+  .page-head p{margin:0;color:var(--text-muted);font-size:13.5px;}
+  .btn-primary{
+    background:var(--accent);color:white;border:none;padding:10px 18px;border-radius:8px;
+    font-size:13.5px;font-weight:600;
+  }
+  .btn-ghost{
+    background:var(--surface);border:1px solid var(--border);padding:10px 18px;border-radius:8px;
+    font-size:13.5px;font-weight:600;color:var(--text);
+  }
+
+  /* ---------- STAT CARDS ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:24px;}
+  .stat-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px;box-shadow:var(--shadow);
+  }
+  .stat-card .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+  .stat-card .label{font-size:12.5px;color:var(--text-muted);font-weight:600;}
+  .stat-card .icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+  .stat-card .value{font-size:26px;font-weight:800;margin-bottom:6px;}
+  .stat-card .delta{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;}
+  .delta.up{color:var(--green);}
+  .delta.down{color:var(--red);}
+
+  /* ---------- CHART CARD ---------- */
+  .grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;margin-bottom:24px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+  .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+  .card-head h3{font-size:15px;margin:0;font-weight:700;}
+  .card-head .tag{font-size:12px;color:var(--text-muted);}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--text-muted);margin-top:10px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend i{width:9px;height:9px;border-radius:2px;display:inline-block;}
+
+  .donut-wrap{display:flex;align-items:center;gap:18px;}
+  .donut-legend{display:flex;flex-direction:column;gap:10px;font-size:13px;}
+  .donut-legend .row{display:flex;justify-content:space-between;gap:24px;}
+  .donut-legend i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-inline-end:8px;}
+
+  /* ---------- TABLE ---------- */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{
+    text-align:start;color:var(--text-muted);font-weight:600;font-size:12px;text-transform:uppercase;
+    letter-spacing:.04em;padding:10px 12px;border-bottom:1px solid var(--border);
+  }
+  td{padding:13px 12px;border-bottom:1px solid var(--border);}
+  tr:last-child td{border-bottom:none;}
+  .row-user{display:flex;align-items:center;gap:10px;}
+  .row-user .av{width:30px;height:30px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:var(--text-muted);flex-shrink:0;}
+  .row-user .name{font-weight:600;}
+  .row-user .email{font-size:12px;color:var(--text-muted);}
+  .badge{padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:700;display:inline-block;}
+  .badge.green{background:var(--green-soft);color:var(--green);}
+  .badge.amber{background:var(--amber-soft);color:var(--amber);}
+  .badge.red{background:var(--red-soft);color:var(--red);}
+  .table-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
+  .filter-chip{border:1px solid var(--border);background:var(--surface);padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--text-muted);}
+  .filter-chip.active{background:var(--accent-soft);color:var(--accent);border-color:transparent;}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;}
+  .pagination{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:13px;color:var(--text-muted);}
+  .pager-btns{display:flex;gap:6px;}
+  .pager-btns button{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-size:12px;}
+  .pager-btns button.active{background:var(--accent);color:white;border-color:var(--accent);}
+
+  /* ---------- SETTINGS ---------- */
+  .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:760px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--text-muted);}
+  .field input{
+    width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);
+    background:var(--bg);color:var(--text);font-size:13.5px;font-family:inherit;
+  }
+  .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);}
+  .toggle-row:last-child{border-bottom:none;}
+  .toggle-row .t{font-size:13.5px;font-weight:600;}
+  .toggle-row .d{font-size:12px;color:var(--text-muted);margin-top:2px;}
+  .switch{width:40px;height:22px;border-radius:20px;background:var(--border);position:relative;border:none;flex-shrink:0;}
+  .switch::after{content:"";position:absolute;top:2px;inset-inline-start:2px;width:18px;height:18px;border-radius:50%;background:white;transition:.2s;}
+  .switch.on{background:var(--accent);}
+  .switch.on::after{inset-inline-start:20px;}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:980px){
+    .sidebar{transform:translateX(-105%);}
+    html[dir="rtl"] .sidebar{transform:translateX(105%);}
+    .sidebar.open{transform:translateX(0);}
+    .main{margin:0 !important;}
+    .hamburger{display:flex;}
+    .search{display:none;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .grid-2{grid-template-columns:1fr;}
+    .settings-grid{grid-template-columns:1fr;}
+  }
+  @media(max-width:560px){
+    .stats{grid-template-columns:1fr;}
+    .content{padding:18px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="dot"></span> Orbit</div>
+
+    <div class="nav-group">
+      <div class="nav-label" data-en="Main" data-ar="الرئيسية">Main</div>
+      <a class="nav-link active" data-page="overview" data-en="Overview" data-ar="نظرة عامة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <span data-en="Overview" data-ar="نظرة عامة">Overview</span>
+      </a>
+      <a class="nav-link" data-page="customers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M15.5 14.2c2.8.3 5 2.4 5 5.8"/></svg>
+        <span data-en="Customers" data-ar="العملاء">Customers</span>
+      </a>
+      <a class="nav-link" data-page="orders">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18l-1.5 12a2 2 0 0 1-2 1.8H6.5a2 2 0 0 1-2-1.8L3 7Z"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+        <span data-en="Orders" data-ar="الطلبات">Orders</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label" data-en="General" data-ar="عام">General</div>
+      <a class="nav-link" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+        <span data-en="Settings" data-ar="الإعدادات">Settings</span>
+      </a>
+    </div>
+
+    <div class="sidebar-foot">
+      <div class="avatar">SM</div>
+      <div>
+        <div class="who">Sara Morgan</div>
+        <div class="role" data-en="Admin" data-ar="مدير">Admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="icon-btn hamburger" onclick="toggleSidebar()">\u2630</button>
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <span data-en="Search..." data-ar="بحث...">Search...</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">\u263E</button>
+        <button class="icon-btn" onclick="toggleLang()" id="langBtn">AR</button>
+        <button class="icon-btn">\uD83D\uDD14</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <section class="page active" id="page-overview">
+        <div class="page-head">
+          <div>
+            <h1 data-en="Overview" data-ar="نظرة عامة">Overview</h1>
+            <p data-en="Welcome back — here's what's happening today." data-ar="أهلاً بيك تاني — دي آخر تحديثات اليوم.">Welcome back — here's what's happening today.</p>
+          </div>
+          <button class="btn-primary" data-en="+ New Report" data-ar="+ تقرير جديد">+ New Report</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="top">
+              <span class="label" data-en="Total Revenue" data-ar="إجمالي الإيرادات">Total Revenue</span>
+              <div class="icon" style="background:var(--accent-soft);color:var(--accent);">$</div>
+            </div>
+            <div class="value">$48,290</div>
+            <span class="delta up">\u2191 12.4% <span style="color:var(--text-muted);font-weight:500;" data-en="vs last month" data-ar="عن الشهر اللي فات">vs last month</span></span>
+          </div>
+          <div class="stat-card">
+            <div class="top">
+              <span class="label" data-en="Active Users" data-ar="مستخدمين نشطين">Active Users</span>
+              <div class="icon" style="background:var(--green-soft);color:var(--green);">\u25CF</div>
+            </div>
+            <div class="value">2,845</div>
+            <span class="delta up">\u2191 8.1% <span style="color:var(--text-muted);font-weight:500;" data-en="vs last month" data-ar="عن الشهر اللي فات">vs last month</span></span>
+          </div>
+          <div class="stat-card">
+            <div class="top">
+              <span class="label" data-en="New Orders" data-ar="طلبات جديدة">New Orders</span>
+              <div class="icon" style="background:var(--amber-soft);color:var(--amber);">\u25A0</div>
+            </div>
+            <div class="value">384</div>
+            <span class="delta down">\u2193 3.2% <span style="color:var(--text-muted);font-weight:500;" data-en="vs last month" data-ar="عن الشهر اللي فات">vs last month</span></span>
+          </div>
+          <div class="stat-card">
+            <div class="top">
+              <span class="label" data-en="Conversion Rate" data-ar="معدل التحويل">Conversion Rate</span>
+              <div class="icon" style="background:var(--red-soft);color:var(--red);">%</div>
+            </div>
+            <div class="value">4.6%</div>
+            <span class="delta up">\u2191 0.8% <span style="color:var(--text-muted);font-weight:500;" data-en="vs last month" data-ar="عن الشهر اللي فات">vs last month</span></span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <h3 data-en="Revenue Trend" data-ar="اتجاه الإيرادات">Revenue Trend</h3>
+              <span class="tag" data-en="Last 7 months" data-ar="آخر 7 شهور">Last 7 months</span>
+            </div>
+            <svg viewBox="0 0 560 180" style="width:100%;height:180px;">
+              <polyline points="0,140 80,120 160,130 240,80 320,95 400,50 480,60 560,20" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <polygon points="0,140 80,120 160,130 240,80 320,95 400,50 480,60 560,20 560,180 0,180" fill="var(--accent)" opacity="0.08"/>
+              <g fill="var(--accent)">
+                <circle cx="0" cy="140" r="4"/><circle cx="80" cy="120" r="4"/><circle cx="160" cy="130" r="4"/>
+                <circle cx="240" cy="80" r="4"/><circle cx="320" cy="95" r="4"/><circle cx="400" cy="50" r="4"/>
+                <circle cx="480" cy="60" r="4"/><circle cx="560" cy="20" r="4"/>
+              </g>
+            </svg>
+            <div class="legend">
+              <span><i style="background:var(--accent);"></i> <span data-en="Revenue" data-ar="الإيرادات">Revenue</span></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h3 data-en="Traffic Sources" data-ar="مصادر الزيارات">Traffic Sources</h3>
+            </div>
+            <div class="donut-wrap">
+              <svg viewBox="0 0 100 100" width="110" height="110">
+                <circle cx="50" cy="50" r="34" fill="none" stroke="var(--border)" stroke-width="16"/>
+                <circle cx="50" cy="50" r="34" fill="none" stroke="var(--accent)" stroke-width="16" stroke-dasharray="106 214" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+                <circle cx="50" cy="50" r="34" fill="none" stroke="#17B26A" stroke-width="16" stroke-dasharray="64 214" stroke-dashoffset="-106" transform="rotate(-90 50 50)"/>
+                <circle cx="50" cy="50" r="34" fill="none" stroke="#F79009" stroke-width="16" stroke-dasharray="44 214" stroke-dashoffset="-170" transform="rotate(-90 50 50)"/>
+              </svg>
+              <div class="donut-legend">
+                <div class="row"><span><i style="background:var(--accent);"></i><span data-en="Organic" data-ar="بحث عضوي">Organic</span></span><b>48%</b></div>
+                <div class="row"><span><i style="background:#17B26A;"></i><span data-en="Social" data-ar="سوشيال">Social</span></span><b>29%</b></div>
+                <div class="row"><span><i style="background:#F79009;"></i><span data-en="Referral" data-ar="إحالة">Referral</span></span><b>20%</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3 data-en="Recent Orders" data-ar="أحدث الطلبات">Recent Orders</h3>
+            <a href="#customers" style="font-size:13px;color:var(--accent);font-weight:600;" data-en="View all" data-ar="عرض الكل">View all</a>
+          </div>
+          <table>
+            <thead><tr>
+              <th data-en="Customer" data-ar="العميل">Customer</th>
+              <th data-en="Order ID" data-ar="رقم الطلب">Order ID</th>
+              <th data-en="Amount" data-ar="المبلغ">Amount</th>
+              <th data-en="Status" data-ar="الحالة">Status</th>
+            </tr></thead>
+            <tbody>
+              <tr><td><div class="row-user"><div class="av">MK</div><div><div class="name">Mona Khaled</div></div></div></td><td>#8841</td><td>$129.00</td><td><span class="badge green" data-en="Completed" data-ar="مكتمل">Completed</span></td></tr>
+              <tr><td><div class="row-user"><div class="av">TR</div><div><div class="name">Tom Reyes</div></div></div></td><td>#8840</td><td>$89.00</td><td><span class="badge amber" data-en="Pending" data-ar="قيد الانتظار">Pending</span></td></tr>
+              <tr><td><div class="row-user"><div class="av">LP</div><div><div class="name">Lina Park</div></div></div></td><td>#8839</td><td>$212.00</td><td><span class="badge green" data-en="Completed" data-ar="مكتمل">Completed</span></td></tr>
+              <tr><td><div class="row-user"><div class="av">JD</div><div><div class="name">James Dune</div></div></div></td><td>#8838</td><td>$54.00</td><td><span class="badge red" data-en="Cancelled" data-ar="ملغي">Cancelled</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CUSTOMERS -->
+      <section class="page" id="page-customers">
+        <div class="page-head">
+          <div>
+            <h1 data-en="Customers" data-ar="العملاء">Customers</h1>
+            <p data-en="Manage and review your customer base." data-ar="إدارة ومراجعة قاعدة عملائك.">Manage and review your customer base.</p>
+          </div>
+          <button class="btn-primary" data-en="+ Add Customer" data-ar="+ إضافة عميل">+ Add Customer</button>
+        </div>
+
+        <div class="card">
+          <div class="table-actions">
+            <div class="filters">
+              <button class="filter-chip active" data-en="All" data-ar="الكل">All</button>
+              <button class="filter-chip" data-en="Active" data-ar="نشط">Active</button>
+              <button class="filter-chip" data-en="Inactive" data-ar="غير نشط">Inactive</button>
+            </div>
+            <div class="search" style="display:flex;width:220px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <span data-en="Search customers" data-ar="دوّر على عميل">Search customers</span>
+            </div>
+          </div>
+          <table>
+            <thead><tr>
+              <th data-en="Name" data-ar="الاسم">Name</th>
+              <th data-en="Email" data-ar="الإيميل">Email</th>
+              <th data-en="Orders" data-ar="الطلبات">Orders</th>
+              <th data-en="Spent" data-ar="الإنفاق">Spent</th>
+              <th data-en="Status" data-ar="الحالة">Status</th>
+            </tr></thead>
+            <tbody>
+              <tr><td><div class="row-user"><div class="av">MK</div><div class="name">Mona Khaled</div></div></td><td style="color:var(--text-muted)">mona.k@example.com</td><td>14</td><td>$1,240</td><td><span class="badge green" data-en="Active" data-ar="نشط">Active</span></td></tr>
+              <tr><td><div class="row-user"><div class="av">TR</div><div class="name">Tom Reyes</div></div></td><td style="color:var(--text-muted)">tom.r@example.com</td><td>3</td><td>$267</td><td><span class="badge green" data-en="Active" data-ar="نشط">Active</span></td></tr>
+              <tr><td><div class="row-user"><div class="av">LP</div><div class="name">Lina Park</div></div></td><td style="color:var(--text-muted)">lina.p@example.com</td><td>27</td><td>$3,890</td><td><span class="badge green" data-en="Active" data-ar="نشط">Active</span></td></tr>
+              <tr><td><div class="row-user"><div class="av">JD</div><div class="name">James Dune</div></div></td><td style="color:var(--text-muted)">james.d@example.com</td><td>1</td><td>$54</td><td><span class="badge red" data-en="Inactive" data-ar="غير نشط">Inactive</span></td></tr>
+              <tr><td><div class="row-user"><div class="av">AY</div><div class="name">Aya Youssef</div></div></td><td style="color:var(--text-muted)">aya.y@example.com</td><td>9</td><td>$980</td><td><span class="badge green" data-en="Active" data-ar="نشط">Active</span></td></tr>
+              <tr><td><div class="row-user"><div class="av">RK</div><div class="name">Ravi Kumar</div></div></td><td style="color:var(--text-muted)">ravi.k@example.com</td><td>5</td><td>$412</td><td><span class="badge amber" data-en="Pending" data-ar="قيد الانتظار">Pending</span></td></tr>
+            </tbody>
+          </table>
+          <div class="pagination">
+            <span data-en="Showing 1–6 of 128" data-ar="١–٦ من ١٢٨">Showing 1–6 of 128</span>
+            <div class="pager-btns">
+              <button>\u2039</button><button class="active">1</button><button>2</button><button>3</button><button>\u203A</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ORDERS -->
+      <section class="page" id="page-orders">
+        <div class="page-head">
+          <div>
+            <h1 data-en="Orders" data-ar="الطلبات">Orders</h1>
+            <p data-en="Track and manage recent orders." data-ar="تتبّع وإدارة أحدث الطلبات.">Track and manage recent orders.</p>
+          </div>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr>
+              <th data-en="Order" data-ar="الطلب">Order</th>
+              <th data-en="Customer" data-ar="العميل">Customer</th>
+              <th data-en="Date" data-ar="التاريخ">Date</th>
+              <th data-en="Amount" data-ar="المبلغ">Amount</th>
+              <th data-en="Status" data-ar="الحالة">Status</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>#8841</td><td>Mona Khaled</td><td>Sep 18, 2026</td><td>$129.00</td><td><span class="badge green" data-en="Completed" data-ar="مكتمل">Completed</span></td></tr>
+              <tr><td>#8840</td><td>Tom Reyes</td><td>Sep 18, 2026</td><td>$89.00</td><td><span class="badge amber" data-en="Pending" data-ar="قيد الانتظار">Pending</span></td></tr>
+              <tr><td>#8839</td><td>Lina Park</td><td>Sep 17, 2026</td><td>$212.00</td><td><span class="badge green" data-en="Completed" data-ar="مكتمل">Completed</span></td></tr>
+              <tr><td>#8838</td><td>James Dune</td><td>Sep 17, 2026</td><td>$54.00</td><td><span class="badge red" data-en="Cancelled" data-ar="ملغي">Cancelled</span></td></tr>
+              <tr><td>#8837</td><td>Aya Youssef</td><td>Sep 16, 2026</td><td>$340.00</td><td><span class="badge green" data-en="Completed" data-ar="مكتمل">Completed</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="page" id="page-settings">
+        <div class="page-head">
+          <div>
+            <h1 data-en="Settings" data-ar="الإعدادات">Settings</h1>
+            <p data-en="Manage your account and preferences." data-ar="إدارة حسابك وتفضيلاتك.">Manage your account and preferences.</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px;">
+          <div class="card-head"><h3 data-en="Profile" data-ar="الملف الشخصي">Profile</h3></div>
+          <div class="settings-grid">
+            <div class="field">
+              <label data-en="Full name" data-ar="الاسم بالكامل">Full name</label>
+              <input type="text" value="Sara Morgan">
+            </div>
+            <div class="field">
+              <label data-en="Email" data-ar="الإيميل">Email</label>
+              <input type="text" value="sara.morgan@example.com">
+            </div>
+            <div class="field">
+              <label data-en="Role" data-ar="الدور">Role</label>
+              <input type="text" value="Administrator">
+            </div>
+            <div class="field">
+              <label data-en="Time zone" data-ar="المنطقة الزمنية">Time zone</label>
+              <input type="text" value="Africa/Cairo (GMT+2)">
+            </div>
+          </div>
+          <button class="btn-primary" data-en="Save Changes" data-ar="حفظ التغييرات">Save Changes</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 data-en="Notifications" data-ar="الإشعارات">Notifications</h3></div>
+          <div class="toggle-row">
+            <div><div class="t" data-en="Email alerts" data-ar="تنبيهات الإيميل">Email alerts</div><div class="d" data-en="Get notified about new orders" data-ar="استلم تنبيه لكل طلب جديد">Get notified about new orders</div></div>
+            <button class="switch on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div><div class="t" data-en="Weekly reports" data-ar="تقارير أسبوعية">Weekly reports</div><div class="d" data-en="A performance summary every Monday" data-ar="ملخص أداء كل يوم اتنين">A performance summary every Monday</div></div>
+            <button class="switch on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="toggle-row">
+            <div><div class="t" data-en="Marketing emails" data-ar="إيميلات تسويقية">Marketing emails</div><div class="d" data-en="Tips, product updates and offers" data-ar="نصايح وتحديثات وعروض">Tips, product updates and offers</div></div>
+            <button class="switch" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ---- page router ---- */
+  var navLinks = document.querySelectorAll('.nav-link');
+  var pages = document.querySelectorAll('.page');
+  function showPage(name){
+    pages.forEach(function(p){ p.classList.toggle('active', p.id === 'page-'+name); });
+    navLinks.forEach(function(a){ a.classList.toggle('active', a.dataset.page === name); });
+  }
+  navLinks.forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      showPage(a.dataset.page);
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+  document.querySelectorAll('a[href="#customers"]').forEach(function(a){
+    a.addEventListener('click', function(e){ e.preventDefault(); showPage('customers'); });
+  });
+
+  /* ---- filter chips (visual only) ---- */
+  document.querySelectorAll('.filter-chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      c.parentElement.querySelectorAll('.filter-chip').forEach(function(x){x.classList.remove('active');});
+      c.classList.add('active');
+    });
+  });
+
+  /* ---- mobile sidebar ---- */
+  function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+  /* ---- theme ---- */
+  function toggleTheme(){
+    document.documentElement.classList.toggle('dark');
+    document.getElementById('themeBtn').textContent =
+      document.documentElement.classList.contains('dark') ? '\u2600' : '\u263E';
+  }
+
+  /* ---- language ---- */
+  var currentLang = 'en';
+  function toggleLang(){
+    currentLang = currentLang === 'en' ? 'ar' : 'en';
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('langBtn').textContent = currentLang === 'en' ? 'AR' : 'EN';
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      el.textContent = currentLang === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-ar');
+    });
+  }
+</script>
+
+</body>
+</html>
